@@ -12,6 +12,9 @@ import { NewTrainingComponent } from './training/new-training/new-training.compo
 import { PastTrainingComponent } from './training/past-training/past-training.component';
 import { WelcomeComponent } from './welcome/welcome/welcome.component';
 import { SignupComponent } from './signup/signup/signup.component';
+import { HeaderComponent } from './navigation/header/header.component';
+import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
+import { TrainingComponent } from './training/training.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { SignupComponent } from './signup/signup/signup.component';
     NewTrainingComponent,
     PastTrainingComponent,
     WelcomeComponent,
-    SignupComponent
+    SignupComponent,
+    HeaderComponent,
+    SidenavListComponent,
+    TrainingComponent
   ],
   imports: [
     BrowserAnimationsModule,
