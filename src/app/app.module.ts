@@ -18,6 +18,7 @@ import { TrainingComponent } from './training/training.component';
 import { CurrentTrainingComponent } from './training/current-training/current-training.component';
 import  {StopTrainingComponent} from './training/current-training/stop-training.component';
 import { AuthService } from './auth/auth/auth-service';
+import { TrainingService } from './training/training.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +41,7 @@ import { AuthService } from './auth/auth/auth-service';
     MaterialsModule,
     FormsModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, TrainingService],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })
