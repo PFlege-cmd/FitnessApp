@@ -15,7 +15,9 @@ import { SignupComponent } from './signup/signup/signup.component';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { TrainingComponent } from './training/training.component';
-
+import { CurrentTrainingComponent } from './training/current-training/current-training.component';
+import  {StopTrainingComponent} from './training/current-training/stop-training.component';
+import { AuthService } from './auth/auth/auth-service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,7 +29,9 @@ import { TrainingComponent } from './training/training.component';
     SignupComponent,
     HeaderComponent,
     SidenavListComponent,
-    TrainingComponent
+    TrainingComponent,
+    CurrentTrainingComponent,
+    StopTrainingComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -36,7 +40,8 @@ import { TrainingComponent } from './training/training.component';
     MaterialsModule,
     FormsModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [AuthService],
+  bootstrap: [AppComponent],
+  entryComponents: [StopTrainingComponent]
 })
 export class AppModule { }
