@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFireModule } from 'angularfire2';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { CurrentTrainingComponent } from './training/current-training/current-tr
 import  {StopTrainingComponent} from './training/current-training/stop-training.component';
 import { AuthService } from './auth/auth/auth-service';
 import { TrainingService } from './training/training.service';
+import {environment} from "../environments/environment";
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +41,8 @@ import { TrainingService } from './training/training.service';
     BrowserModule,
     AppRoutingModule,
     MaterialsModule,
-    FormsModule
+    FormsModule,
+    AngularFireModule.initializeApp(environment.firebase),
   ],
   providers: [AuthService, TrainingService],
   bootstrap: [AppComponent],

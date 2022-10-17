@@ -13,7 +13,7 @@ import { StopTrainingComponent } from './stop-training.component';
 export class CurrentTrainingComponent implements OnInit {
 
   progress = 0;
-  timer: number = 0;
+  timer: ReturnType<typeof setTimeout>;
   setAndCheckTimer() {
     const stepDuration = this.currentExercise.duration/100*1000;
     this.timer = setInterval(()=>{
@@ -22,7 +22,7 @@ export class CurrentTrainingComponent implements OnInit {
         clearInterval(this.timer);
         this.trainingService.completeExercise();
         }
-  }, stepDuration)
+  }, stepDuration);
   }
   currentExercise: Exercise;
 
