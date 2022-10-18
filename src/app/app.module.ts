@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AngularFireModule } from 'angularfire2';
+import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,31 +21,39 @@ import  {StopTrainingComponent} from './training/current-training/stop-training.
 import { AuthService } from './auth/auth/auth-service';
 import { TrainingService } from './training/training.service';
 import {environment} from "../environments/environment";
+import { provideAuth,getAuth } from '@angular/fire/auth';
+import { provideDatabase,getDatabase } from '@angular/fire/database';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { AngularFireModule } from "@angular/fire/compat";
+import { AngularFireAuthModule } from "@angular/fire/compat/auth";
+import {AuthModule} from "./auth/auth/auth.module";
+import {TrainingModule} from "./training/training.module";
+import {AuthRoutingModule} from "./auth/auth/auth-routing.module";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    LoginComponent,
-    NewTrainingComponent,
-    PastTrainingComponent,
     WelcomeComponent,
-    SignupComponent,
     HeaderComponent,
     SidenavListComponent,
-    TrainingComponent,
-    CurrentTrainingComponent,
-    StopTrainingComponent
   ],
   imports: [
+    provideAuth(() => getAuth()),
+    provideDatabase(() => getDatabase()),
+    provideFirestore(() => getFirestore()),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    AuthRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
     MaterialsModule,
     FormsModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AuthModule,
   ],
   providers: [AuthService, TrainingService],
   bootstrap: [AppComponent],
-  entryComponents: [StopTrainingComponent]
 })
 export class AppModule { }

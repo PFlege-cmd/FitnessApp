@@ -51,6 +51,7 @@
       name="agreed"
       #agreement="ngModel"
     >Agree to Terms and Conditions</mat-checkbox>
-    <button type="submit" mat-raised-button color="primary" [disabled]="ng_form.invalid">Submit</button>
+    <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="ng_form.invalid">Submit</button>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
   </form>
 </section>

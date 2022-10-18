@@ -34,6 +34,7 @@
       <mat-error *ngIf="pwInput.hasError('required')">This field is required</mat-error>
       <mat-error *ngIf="!pwInput.hasError('required')">Password is invalid</mat-error>
     </mat-form-field>
-    <button type="submit" mat-raised-button color="primary" [disabled] = "loginForm.invalid">Login</button>
+    <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled] = "loginForm.invalid">Login</button>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
   </form>
 </section>

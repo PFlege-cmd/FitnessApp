@@ -1,54 +1,69 @@
-import { getMatInputUnsupportedTypeError } from "@angular/material/input";
 import { Subject } from "rxjs";
-import { User } from "./user.model";
-import { AuthData } from "./auth-data.model";
-import { createInjectableType } from "@angular/compiler";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { MatSnackBar } from "@angular/material/snack-bar";
+
+import { AuthData } from "./auth-data.model";
+import { TrainingService } from "../../training/training.service";
+import {UiService} from "../../shared/ui.service";
+
+
 
 
 @Injectable()
 export class AuthService{
-  private user? : User;
   loginSubject = new Subject<boolean>();
+  isAuthenticated = false;
 
-  constructor(private router: Router){
-
+  constructor(private router: Router,
+              private angularFireAuth: AngularFireAuth,
+              private trainingService: TrainingService,
+              private matSnackBar: MatSnackBar,
+              private uiService: UiService){
   }
 
-  registerUser(authData: AuthData,){
-    this.user = {
-      email: authData.email,
-      userId: Math.round(Math.random()*10000).toString()
-    }
-    this.loginOrAuthenticate();
+  initAuthentificationState(){
+    this.angularFireAuth.authState.subscribe(user=> {
+      if (user){
+        this.loginSubject.next(true);
+        this.router.navigate(['/training']);
+        this.isAuthenticated = true;
+      } else {
+        this.trainingService.cancelSubscriptions();
+        this.loginSubject.next(false);
+        this.router.navigate(['/login']);
+        this.isAuthenticated = false;
+      }
+    })
+  }
+
+  registerUser(authData: AuthData){
+    this.uiService.loadingSubject.next(true);
+    this.angularFireAuth
+      .createUserWithEmailAndPassword(authData.email, authData.password)
+      .then(success => {
+        console.log(success);
+      })
+      .catch(error=> {
+        this.uiService.showSnackbar(error.message, null, 3000);
+      })
   }
 
   login(authData: AuthData){
-    this.user = {
-      email: authData.email,
-      userId: Math.round(Math.random()*10000).toString()
-    };
-    this.loginOrAuthenticate();
+    this.uiService.loadingSubject.next(true);
+    this.angularFireAuth.signInWithEmailAndPassword(authData.email, authData.password).then(success => {
+      console.log(success);
+    }).catch(error=> {
+      this.uiService.showSnackbar(error.message, null, 3000);
+    });
   }
 
   logout(){
-    this.user = undefined;
-    this.loginSubject.next(false);
+    this.angularFireAuth.signOut();
   }
 
   isAuth(){
-    return this.user != undefined;
-  }
-
-  getUser(){
-    return {
-      ...this.user
-    };
-  }
-
-  private loginOrAuthenticate() {
-    this.loginSubject.next(true);
-    this.router.navigate(['/training']);
+    return this.isAuthenticated;
   }
 }
