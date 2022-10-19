@@ -12,7 +12,7 @@ import {createFeatureSelector, createSelector} from "@ngrx/store";
 export interface TrainingState {
   availableExercises: Exercise[];
   finishedExercises: Exercise[];
-  currentExercise: Exercise
+  currentExercise: Exercise | null
 }
 
 // Why does this work? Because the trainings are lazily loaded (fetched from the server asynchronously, whenever we need them)
@@ -35,35 +35,40 @@ export function trainingReducer(state = initialState, action: TrainingActions): 
     case SET_AVAILABLE_EXERCISES:
       console.log("In reducer");
       console.log(action.payload);
-      return {
+      const newState: TrainingState = {
         availableExercises: action.payload,
-        ...state
-      }
+        currentExercise: state.currentExercise,
+        finishedExercises: state.finishedExercises
+      };
+      return newState;
     case SET_FINISHED_EXERCISES:
       return {
         finishedExercises: action.payload,
-        ...state
-      }
+        availableExercises: state.availableExercises,
+        currentExercise: state.currentExercise
+      };
     case START_TRAINING:
       return {
         currentExercise: state.availableExercises.find(exercise =>
           action.payload===exercise.id),
-        ...state
-      }
+        finishedExercises: state.finishedExercises,
+        availableExercises: state.availableExercises
+      };
     case STOP_TRAINING:
       return {
         currentExercise: null,
-        ...state
-      }
-    default:
+        finishedExercises: state.finishedExercises,
+        availableExercises: state.availableExercises
+      };
+    default: {
       return state;
+    }
   }
 }
 
 const getTrainingState = createFeatureSelector<TrainingState>('training');
 
 export const getAvailableExercises = createSelector(getTrainingState, (state: TrainingState) => {
-
   console.log("Selector called")
   console.log("SHOW STATE:");
   console.log(state);

@@ -1,9 +1,11 @@
-import { outputAst } from '@angular/compiler';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Exercise } from '../exercise.model';
-import { TrainingService } from '../training.service';
-import { StopTrainingComponent } from './stop-training.component';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Exercise} from '../exercise.model';
+import {TrainingService} from '../training.service';
+import {StopTrainingComponent} from './stop-training.component';
+import * as fromTraining from './../training.reducer';
+import {Store} from "@ngrx/store";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-current-training',
@@ -14,24 +16,27 @@ export class CurrentTrainingComponent implements OnInit {
 
   progress = 0;
   timer: ReturnType<typeof setTimeout>;
-  setAndCheckTimer() {
-    const stepDuration = this.currentExercise.duration/100*1000;
-    this.timer = setInterval(()=>{
-      this.progress = this.progress + 5;
-      if(this.progress >= 100){
-        clearInterval(this.timer);
-        this.trainingService.completeExercise();
-        }
-  }, stepDuration);
-  }
-  currentExercise: Exercise;
 
-  constructor(private dialog: MatDialog, private trainingService: TrainingService) {
-    this.currentExercise = trainingService.getCurrentExercise();
+  constructor(private dialog: MatDialog,
+              private trainingService: TrainingService,
+              private store: Store<fromTraining.State>) {
    }
 
   ngOnInit(): void {
     this.setAndCheckTimer();
+  }
+
+  setAndCheckTimer() {
+    this.store.select(fromTraining.getCurrentExercise).pipe(take(1)).subscribe(exercise => {
+      const stepDuration = exercise.duration/100*1000;
+      this.timer = setInterval(()=>{
+        this.progress = this.progress + 5;
+        if(this.progress >= 100){
+          clearInterval(this.timer);
+          this.trainingService.completeExercise();
+        }
+      }, stepDuration);
+    })
   }
 
   onStop(){
