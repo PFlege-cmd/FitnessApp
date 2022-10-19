@@ -1,46 +1,41 @@
-import {Component, OnInit, Output, EventEmitter, OnDestroy} from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Exercise } from '../exercise.model';
-import { TrainingService } from '../training.service';
-import {Subscription} from "rxjs";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Exercise} from '../exercise.model';
+import {TrainingService} from '../training.service';
+import {Observable} from "rxjs";
 import {UiService} from "../../shared/ui.service";
+import * as fromApp from '../../app.reducer';
+import * as fromTraining from '../training.reducer';
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-new-training',
   templateUrl: './new-training.component.html',
   styleUrls: ['./new-training.component.css']
 })
-export class NewTrainingComponent implements OnInit, OnDestroy {
+export class NewTrainingComponent implements OnInit {
 
   @Output() startedTraining = new EventEmitter<void>();
-  exercises: Exercise[];
-  isLoading = true;
-  isLoadingSubscription: Subscription;
+  exercises$: Observable<Exercise[]>;
+  isLoading$: Observable<boolean>;
 
   constructor(
-    private trainingService: TrainingService, private uiService: UiService) {
+    private trainingService: TrainingService,
+    private uiService: UiService,
+    private store: Store<fromTraining.State>) {
   }
 
   ngOnInit(): void {
     this.fetchExercises();
-    this.isLoadingSubscription = this.uiService.loadingSubject.subscribe(loading => {
-      this.isLoading = loading;
-    })
+    this.isLoading$ = this.store.select(fromApp.getIsLoading)
   }
 
   fetchExercises() {
     this.trainingService.fetchAvailableExercises();
-    this.trainingService.exercisesSubject.subscribe(exerciseArray => this.exercises = exerciseArray);
+    this.exercises$ = this.store.select(fromTraining.getAvailableExercises)
   }
 
   startNewTraining(form: NgForm){
-    console.log(form);
     this.trainingService.setCurrentExercise(form.value.exercise.id);
-  }
-
-  ngOnDestroy(): void {
-    if (this.isLoadingSubscription){
-      this.isLoadingSubscription.unsubscribe();
-    }
   }
 }

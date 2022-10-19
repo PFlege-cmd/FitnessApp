@@ -4,12 +4,10 @@ import {PastTrainingComponent} from "./past-training/past-training.component";
 import {CurrentTrainingComponent} from "./current-training/current-training.component";
 import {StopTrainingComponent} from "./current-training/stop-training.component";
 import {TrainingComponent} from "./training.component";
-import {getAuth, provideAuth} from "@angular/fire/auth";
-import {getDatabase, provideDatabase} from "@angular/fire/database";
-import {getFirestore, provideFirestore} from "@angular/fire/firestore";
 import {SharedModule} from "../shared/shared.module";
-import {AuthRoutingModule} from "../auth/auth/auth-routing.module";
 import {TrainingRoutingModule} from "./training-routing.module";
+import {StoreModule} from "@ngrx/store";
+import {trainingReducer} from "./training.reducer";
 
 @NgModule({
   declarations: [
@@ -17,11 +15,12 @@ import {TrainingRoutingModule} from "./training-routing.module";
     NewTrainingComponent,
     PastTrainingComponent,
     CurrentTrainingComponent,
-    StopTrainingComponent
+    StopTrainingComponent,
   ],
   imports: [
     SharedModule,
     TrainingRoutingModule,
+    StoreModule.forFeature('training', trainingReducer)
   ],
   exports: [],
   entryComponents: [StopTrainingComponent]
