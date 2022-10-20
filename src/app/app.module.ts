@@ -22,6 +22,8 @@ import {AuthRoutingModule} from "./auth/auth/auth-routing.module";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {StoreModule} from "@ngrx/store";
 import * as fromReducer from './app.reducer'
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {SharedModule} from "./shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -31,23 +33,24 @@ import * as fromReducer from './app.reducer'
     HeaderComponent,
     SidenavListComponent,
   ],
-  imports: [
-    provideAuth(() => getAuth()),
-    provideDatabase(() => getDatabase()),
-    provideFirestore(() => getFirestore()),
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
-    AuthRoutingModule,
-    BrowserAnimationsModule,
-    BrowserModule,
-    AppRoutingModule,
-    MaterialsModule,
-    FormsModule,
-    AuthModule,
-    StoreModule.forRoot(
-      fromReducer.reducers
-    )
-  ],
+    imports: [
+        provideAuth(() => getAuth()),
+        provideDatabase(() => getDatabase()),
+        provideFirestore(() => getFirestore()),
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        AuthRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        AppRoutingModule,
+        MaterialsModule,
+        FormsModule,
+        AuthModule,
+        StoreModule.forRoot(
+            fromReducer.reducers
+        ),
+        SharedModule
+    ],
   providers: [AuthService, TrainingService],
   bootstrap: [AppComponent],
 })
